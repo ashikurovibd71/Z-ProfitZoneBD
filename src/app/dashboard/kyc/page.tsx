@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { AlertTriangle, Upload, Image as ImageIcon, IdCard, Loader2, CheckCircle } from "lucide-react";
+import { AlertTriangle, Upload, Image as ImageIcon, IdCard, Loader2, CheckCircle, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function KycPage() {
