@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import type { User } from './User';
+import { User } from './User';
 
 @Entity('withdrawals')
 export class Withdrawal {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne('User', (user: User) => user.withdrawals)
+  @ManyToOne(() => User, (user: User) => user.withdrawals)
   @JoinColumn({ name: 'userId' })
   user!: User;
 

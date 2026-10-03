@@ -1,12 +1,12 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import type { User } from './User';
+import { User } from './User';
 
 @Entity('deposits')
 export class Deposit {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @ManyToOne('User', (user: User) => user.deposits)
+  @ManyToOne(() => User, (user: User) => user.deposits)
   user!: User;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

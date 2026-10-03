@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
-import type { Deposit } from './Deposit';
-import type { UserPackage } from './UserPackage';
-import type { UserTask } from './UserTask';
-import type { Withdrawal } from './Withdrawal';
+import { Deposit } from './Deposit';
+import { UserPackage } from './UserPackage';
+import { UserTask } from './UserTask';
+import { Withdrawal } from './Withdrawal';
 
 @Entity('users')
 export class User {
@@ -39,16 +39,16 @@ export class User {
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
   walletBalance!: number;
 
-  @OneToMany('Deposit', (deposit: Deposit) => deposit.user)
+  @OneToMany(() => Deposit, (deposit: Deposit) => deposit.user)
   deposits!: Deposit[];
 
-  @OneToMany('UserPackage', (userPackage: UserPackage) => userPackage.user)
+  @OneToMany(() => UserPackage, (userPackage: UserPackage) => userPackage.user)
   userPackages!: UserPackage[];
 
-  @OneToMany('UserTask', (userTask: UserTask) => userTask.user)
+  @OneToMany(() => UserTask, (userTask: UserTask) => userTask.user)
   userTasks!: UserTask[];
 
-  @OneToMany('Withdrawal', (withdrawal: Withdrawal) => withdrawal.user)
+  @OneToMany(() => Withdrawal, (withdrawal: Withdrawal) => withdrawal.user)
   withdrawals!: Withdrawal[];
 
   @Column({ type: 'timestamp', nullable: true })

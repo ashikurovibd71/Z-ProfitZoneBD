@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
-import type { UserPackage } from './UserPackage';
+import { UserPackage } from './UserPackage';
 
 @Entity('packages')
 export class Package {
@@ -21,7 +21,7 @@ export class Package {
   @Column({ type: 'int' })
   dailyTasks!: number;
 
-  @OneToMany('UserPackage', (userPackage: UserPackage) => userPackage.package)
+  @OneToMany(() => UserPackage, (userPackage: UserPackage) => userPackage.package)
   userPackages!: UserPackage[];
 
   @CreateDateColumn()
