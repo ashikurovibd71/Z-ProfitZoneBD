@@ -44,13 +44,7 @@ export async function POST(req: Request) {
     user.lastLogin = new Date();
     await userRepository.save(user);
 
-    if (user.role !== 'admin' && user.kycStatus !== 'approved') {
-      console.log(`Login blocked for ${phone}: KYC status is ${user.kycStatus}`);
-      if (user.kycStatus === 'rejected') {
-        return NextResponse.json({ error: 'আপনার অ্যাকাউন্ট বাতিল করা হয়েছে। অনুগ্রহ করে সাপোর্টে যোগাযোগ করুন।' }, { status: 403 });
-      }
-      return NextResponse.json({ error: 'আপনার অ্যাকাউন্টটি অনুমোদনের অপেক্ষায় আছে। দয়া করে অপেক্ষা করুন।' }, { status: 403 });
-    }
+    // KYC check removed to allow login before approval
 
     const token = jwt.sign(
       { userId: user.id, phone: user.phone, role: user.role },
