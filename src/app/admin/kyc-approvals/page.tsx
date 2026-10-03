@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, Eye, Loader2, Users, Clock, CheckCircle, XCircle } from "lucide-react";
+import { ArrowLeft, Eye, Loader2, Users, Clock, CheckCircle, XCircle , Trash2} from "lucide-react";
 import Link from "next/link";
 
 type User = {
@@ -20,6 +20,8 @@ type User = {
 export default function KYCApprovalsPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchUsers = async () => {
     try {
@@ -32,6 +34,45 @@ export default function KYCApprovalsPage() {
       console.error("Failed to fetch users");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (ids: string[]) => {
+    if (!confirm(`Are you sure you want to delete ${ids.length} item(s)? This action cannot be undone.`)) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/admin/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entity: "User", ids })
+      });
+      if (res.ok) {
+        setUsers(prev => prev.filter((item: any) => !ids.includes(item.id)));
+        setSelectedIds([]);
+      } else {
+        const data = await res.json();
+        alert("Failed to delete: " + data.error);
+      }
+    } catch (err) {
+      alert("Error deleting items");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === users.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(users.map((item: any) => item.id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(prev => prev.filter(i => i !== id));
+    } else {
+      setSelectedIds(prev => [...prev, id]);
     }
   };
 
@@ -110,7 +151,7 @@ export default function KYCApprovalsPage() {
               ) : (
                 users.map(user => (
                   <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="p-4 font-medium">{user.fullName}</td>
+                    <td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(user.id)} onChange={() => toggleSelect(user.id)} /></td><td className="p-4 font-medium">{user.fullName}</td>
                     <td className="p-4 text-sm text-gray-400">
                       {user.phone}
                       {user.email && <div className="text-xs opacity-70">{user.email}</div>}

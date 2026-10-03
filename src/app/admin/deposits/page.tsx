@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowDownToLine, Search, Loader2, CheckCircle, XCircle, Clock } from "lucide-react";
+import { ArrowDownToLine, Search, Loader2, CheckCircle, XCircle, Clock , Trash2} from "lucide-react";
 
 type Deposit = {
   id: string;
@@ -21,6 +21,8 @@ type Deposit = {
 export default function AdminDepositsPage() {
   const [deposits, setDeposits] = useState<Deposit[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchDeposits();
@@ -37,6 +39,45 @@ export default function AdminDepositsPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (ids: string[]) => {
+    if (!confirm(`Are you sure you want to delete ${ids.length} item(s)? This action cannot be undone.`)) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/admin/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entity: "Deposit", ids })
+      });
+      if (res.ok) {
+        setDeposits(prev => prev.filter((item: any) => !ids.includes(item.id)));
+        setSelectedIds([]);
+      } else {
+        const data = await res.json();
+        alert("Failed to delete: " + data.error);
+      }
+    } catch (err) {
+      alert("Error deleting items");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === deposits.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(deposits.map((item: any) => item.id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(prev => prev.filter(i => i !== id));
+    } else {
+      setSelectedIds(prev => [...prev, id]);
     }
   };
 
@@ -83,6 +124,16 @@ export default function AdminDepositsPage() {
 
       <div className="bg-[#111] border border-white/10 rounded-2xl overflow-hidden">
         <div className="p-4 border-b border-white/10 flex justify-between items-center bg-black/40">
+          
+          {selectedIds.length > 0 && (
+            <button 
+              onClick={() => handleDelete(selectedIds)}
+              disabled={isDeleting}
+              className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium mr-4 transition-colors"
+            >
+              <Trash2 size={16} /> Delete Selected ({selectedIds.length})
+            </button>
+          )}
           <div className="relative w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
             <input 
@@ -97,7 +148,7 @@ export default function AdminDepositsPage() {
           <table className="w-full text-left text-sm">
             <thead className="bg-white/5 text-gray-400">
               <tr>
-                <th className="p-4 font-medium">User</th>
+                <th className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={deposits.length > 0 && selectedIds.length === deposits.length} onChange={toggleSelectAll} /></th><th className="p-4 font-medium">User</th>
                 <th className="p-4 font-medium">Amount</th>
                 <th className="p-4 font-medium">Method</th>
                 <th className="p-4 font-medium">TrxID</th>
@@ -123,7 +174,8 @@ export default function AdminDepositsPage() {
               ) : (
                 deposits.map((deposit) => (
                   <tr key={deposit.id} className="hover:bg-white/5 transition-colors">
-                    <td className="p-4">
+                    <td className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(deposit.id)} onChange={() => toggleSelect(deposit.id)} /></td>
+<td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(deposit.id)} onChange={() => toggleSelect(deposit.id)} /></td><td className="p-4">
                       <p className="font-medium text-white">{deposit.user?.fullName}</p>
                       <p className="text-xs text-gray-500">{deposit.user?.phone}</p>
                     </td>

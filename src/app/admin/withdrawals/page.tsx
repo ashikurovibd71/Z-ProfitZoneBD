@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowUpFromLine, Loader2 } from "lucide-react";
+import { ArrowUpFromLine, Loader2 , Trash2} from "lucide-react";
 import Link from "next/link";
 
 export default function AdminWithdrawalsPage() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchWithdrawals();
@@ -23,6 +25,45 @@ export default function AdminWithdrawalsPage() {
       console.error(e);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (ids: string[]) => {
+    if (!confirm(`Are you sure you want to delete ${ids.length} item(s)? This action cannot be undone.`)) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/admin/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entity: "Withdrawal", ids })
+      });
+      if (res.ok) {
+        setWithdrawals(prev => prev.filter((item: any) => !ids.includes(item.id)));
+        setSelectedIds([]);
+      } else {
+        const data = await res.json();
+        alert("Failed to delete: " + data.error);
+      }
+    } catch (err) {
+      alert("Error deleting items");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === withdrawals.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(withdrawals.map((item: any) => item.id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(prev => prev.filter(i => i !== id));
+    } else {
+      setSelectedIds(prev => [...prev, id]);
     }
   };
 
@@ -74,7 +115,7 @@ export default function AdminWithdrawalsPage() {
           <table className="w-full text-left">
             <thead className="bg-white/5 text-gray-400 text-sm">
               <tr>
-                <th className="p-4 font-medium">Date</th>
+                <th className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={withdrawals.length > 0 && selectedIds.length === withdrawals.length} onChange={toggleSelectAll} /></th><th className="p-4 font-medium">Date</th>
                 <th className="p-4 font-medium">User</th>
                 <th className="p-4 font-medium">Method</th>
                 <th className="p-4 font-medium">Account Number</th>
@@ -100,7 +141,8 @@ export default function AdminWithdrawalsPage() {
               ) : (
                 withdrawals.map((item) => (
                   <tr key={item.id} className="hover:bg-white/5 transition-colors">
-                    <td className="p-4 text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</td>
+                    <td className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(item.id)} onChange={() => toggleSelect(item.id)} /></td>
+<td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(item.id)} onChange={() => toggleSelect(item.id)} /></td><td className="p-4 text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</td>
                     <td className="p-4">
                       <p className="font-bold text-white">{item.user?.fullName}</p>
                       <p className="text-xs text-gray-500">{item.user?.phone}</p>

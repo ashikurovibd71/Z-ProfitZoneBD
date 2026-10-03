@@ -15,6 +15,8 @@ type Task = {
 export default function AdminTasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -44,6 +46,45 @@ export default function AdminTasksPage() {
     }
   };
 
+  const handleDelete = async (ids: string[]) => {
+    if (!confirm(`Are you sure you want to delete ${ids.length} item(s)? This action cannot be undone.`)) return;
+    setIsDeleting(true);
+    try {
+      const res = await fetch("/api/admin/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entity: "Task", ids })
+      });
+      if (res.ok) {
+        setTasks(prev => prev.filter((item: any) => !ids.includes(item.id)));
+        setSelectedIds([]);
+      } else {
+        const data = await res.json();
+        alert("Failed to delete: " + data.error);
+      }
+    } catch (err) {
+      alert("Error deleting items");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.length === tasks.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(tasks.map((item: any) => item.id));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(prev => prev.filter(i => i !== id));
+    } else {
+      setSelectedIds(prev => [...prev, id]);
+    }
+  };
+
   const handleCreateTask = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -65,20 +106,6 @@ export default function AdminTasksPage() {
       alert('An error occurred');
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this task?')) return;
-    try {
-      const res = await fetch(`/api/admin/tasks/${id}`, { method: 'DELETE' });
-      if (res.ok) {
-        setTasks(tasks.filter(t => t.id !== id));
-      } else {
-        alert('Failed to delete task');
-      }
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -113,7 +140,7 @@ export default function AdminTasksPage() {
           tasks.map((task) => (
             <div key={task.id} className="bg-[#111] border border-white/10 p-6 rounded-3xl relative group">
               <button 
-                onClick={() => handleDelete(task.id)}
+                onClick={() => handleDelete([task.id])}
                 className="absolute top-4 right-4 p-2 bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white rounded-lg transition-colors opacity-0 group-hover:opacity-100"
               >
                 <Trash2 size={16} />

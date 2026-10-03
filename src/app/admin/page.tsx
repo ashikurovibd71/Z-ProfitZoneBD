@@ -1,6 +1,43 @@
-import { Users, ShieldAlert, ArrowDownToLine, ArrowUpFromLine, Activity } from "lucide-react";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Users, ShieldAlert, ArrowDownToLine, ArrowUpFromLine, Activity, Loader2 } from "lucide-react";
+
+interface AdminStats {
+  totalUsers: number;
+  pendingKyc: number;
+  pendingDeposits: number;
+  pendingWithdrawals: number;
+  depositFees: number;
+  withdrawalFees: number;
+  totalRevenue: number;
+}
 
 export default function AdminOverview() {
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/admin/stats')
+      .then(res => res.json())
+      .then(data => {
+        setStats(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to fetch admin stats:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading || !stats) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="animate-spin text-blue-500" size={48} />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="flex justify-between items-end">
@@ -14,27 +51,27 @@ export default function AdminOverview() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard 
           title="Total Users" 
-          value="1,248" 
+          value={stats.totalUsers.toString()} 
           icon={<Users className="text-blue-400" size={24} />} 
-          trend="+12 today"
+          trend="Total Platform Users"
         />
         <StatCard 
           title="Pending KYC" 
-          value="45" 
+          value={stats.pendingKyc.toString()} 
           icon={<ShieldAlert className="text-orange-400" size={24} />} 
-          urgent={true}
+          urgent={stats.pendingKyc > 0}
         />
         <StatCard 
           title="Pending Deposits" 
-          value="12" 
+          value={stats.pendingDeposits.toString()} 
           icon={<ArrowDownToLine className="text-green-400" size={24} />} 
-          urgent={true}
+          urgent={stats.pendingDeposits > 0}
         />
         <StatCard 
           title="Pending Withdrawals" 
-          value="8" 
+          value={stats.pendingWithdrawals.toString()} 
           icon={<ArrowUpFromLine className="text-red-400" size={24} />} 
-          urgent={true}
+          urgent={stats.pendingWithdrawals > 0}
         />
       </div>
 
@@ -46,9 +83,9 @@ export default function AdminOverview() {
             <Activity className="text-indigo-400" /> Action Required
           </h3>
           <div className="space-y-4">
-            <ActionItem title="Review KYC Applications" count={45} href="/admin/kyc-approvals" color="orange" />
-            <ActionItem title="Approve Deposits (6% Fee auto-applied)" count={12} href="/admin/deposits" color="green" />
-            <ActionItem title="Process Withdrawals" count={8} href="/admin/withdrawals" color="red" />
+            <ActionItem title="Review KYC Applications" count={stats.pendingKyc} href="/admin/kyc-approvals" color="orange" />
+            <ActionItem title="Approve Deposits (6% Fee auto-applied)" count={stats.pendingDeposits} href="/admin/deposits" color="green" />
+            <ActionItem title="Process Withdrawals" count={stats.pendingWithdrawals} href="/admin/withdrawals" color="red" />
           </div>
         </div>
 
@@ -58,16 +95,16 @@ export default function AdminOverview() {
           <div className="space-y-6">
             <div>
               <p className="text-gray-400 text-sm">Total Deposit Fees Collected</p>
-              <p className="text-3xl font-bold text-white">৳ 124,500.00</p>
+              <p className="text-3xl font-bold text-white">৳ {stats.depositFees.toFixed(2)}</p>
             </div>
             <div>
               <p className="text-gray-400 text-sm">Total Withdrawal Fees Collected</p>
-              <p className="text-3xl font-bold text-white">৳ 86,200.00</p>
+              <p className="text-3xl font-bold text-white">৳ {stats.withdrawalFees.toFixed(2)}</p>
             </div>
             <div className="h-px w-full bg-white/10 my-4"></div>
             <div>
               <p className="text-gray-300 font-medium">Total Platform Revenue</p>
-              <p className="text-4xl font-bold text-green-400">৳ 210,700.00</p>
+              <p className="text-4xl font-bold text-green-400">৳ {stats.totalRevenue.toFixed(2)}</p>
             </div>
           </div>
         </div>

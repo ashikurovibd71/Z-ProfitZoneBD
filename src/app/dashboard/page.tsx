@@ -11,22 +11,33 @@ export default function DashboardOverview() {
   const [showKycModal, setShowKycModal] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
   
+  const [stats, setStats] = useState<any>(null);
+  
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchData = async () => {
       try {
-        const res = await fetch("/api/auth/me");
-        if (res.ok) {
-          const data = await res.json();
+        const [authRes, statsRes] = await Promise.all([
+          fetch("/api/auth/me"),
+          fetch("/api/user/dashboard-stats")
+        ]);
+
+        if (authRes.ok) {
+          const data = await authRes.json();
           setBalance(Number(data.user.walletBalance) || 0);
           setUserName(data.user.fullName);
           setKycStatus(data.user.kycStatus || 'pending');
           setHasKycDocs(!!data.user.profilePicture && !!data.user.nidFront && !!data.user.nidBack);
         }
+
+        if (statsRes.ok) {
+          const statsData = await statsRes.json();
+          setStats(statsData);
+        }
       } catch (error) {
-        console.error("Failed to fetch user data");
+        console.error("Failed to fetch data");
       }
     };
-    fetchUserData();
+    fetchData();
   }, []);
 
   return (
@@ -169,20 +180,20 @@ export default function DashboardOverview() {
         />
         <StatCard 
           title="Total Earned" 
-          value="৳ 8,500.00" 
+          value={`৳ ${(stats?.totalEarned || 0).toFixed(2)}`} 
           icon={<ArrowUpRight className="text-green-400" size={24} />} 
           trend="Lifetime"
         />
         <StatCard 
           title="Tasks Completed" 
-          value="142" 
+          value={(stats?.tasksCompleted || 0).toString()} 
           icon={<CheckCircle2 className="text-blue-400" size={24} />} 
-          trend="4 today"
+          trend={`${stats?.activePackage?.tasksDoneToday || 0} today`}
           trendUp={true}
         />
         <StatCard 
           title="Pending Approval" 
-          value="3" 
+          value={(stats?.pendingApproval || 0).toString()} 
           icon={<Clock className="text-orange-400" size={24} />} 
           trend="Manual Tasks"
         />
@@ -195,26 +206,32 @@ export default function DashboardOverview() {
         <div className="xl:col-span-1 p-6 rounded-3xl bg-gradient-to-b from-indigo-500/10 to-transparent border border-indigo-500/20 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-32 bg-indigo-500/10 blur-[50px] rounded-full"></div>
           <h3 className="text-xl font-bold mb-4 relative z-10">Active Package</h3>
-          <div className="p-4 bg-black/40 rounded-2xl border border-white/5 relative z-10">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-indigo-400 font-bold">Pro Earner</span>
-              <span className="text-xs text-gray-400">12 Days Left</span>
-            </div>
-            <div className="space-y-2 text-sm text-gray-300">
-              <div className="flex justify-between">
-                <span>Daily Limit</span>
-                <span className="font-bold text-white">20 Tasks</span>
+          {stats?.activePackage ? (
+            <div className="p-4 bg-black/40 rounded-2xl border border-white/5 relative z-10">
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-indigo-400 font-bold">{stats.activePackage.name}</span>
+                <span className="text-xs text-gray-400">{stats.activePackage.daysLeft} Days Left</span>
               </div>
-              <div className="flex justify-between">
-                <span>Tasks Done Today</span>
-                <span className="font-bold text-white">4 / 20</span>
+              <div className="space-y-2 text-sm text-gray-300">
+                <div className="flex justify-between">
+                  <span>Daily Limit</span>
+                  <span className="font-bold text-white">{stats.activePackage.dailyTasks} Tasks</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Tasks Done Today</span>
+                  <span className="font-bold text-white">{stats.activePackage.tasksDoneToday} / {stats.activePackage.dailyTasks}</span>
+                </div>
+              </div>
+              {/* Progress Bar */}
+              <div className="w-full h-2 bg-white/10 rounded-full mt-4 overflow-hidden">
+                <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${Math.min(100, (stats.activePackage.tasksDoneToday / stats.activePackage.dailyTasks) * 100)}%` }}></div>
               </div>
             </div>
-            {/* Progress Bar */}
-            <div className="w-full h-2 bg-white/10 rounded-full mt-4 overflow-hidden">
-              <div className="h-full bg-indigo-500 rounded-full" style={{ width: '20%' }}></div>
+          ) : (
+            <div className="p-4 bg-black/40 rounded-2xl border border-white/5 relative z-10 text-center py-8">
+              <p className="text-gray-400 mb-4">No active package found</p>
             </div>
-          </div>
+          )}
           <button className="mt-6 w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors relative z-10">
             Upgrade Package
           </button>
@@ -228,11 +245,7 @@ export default function DashboardOverview() {
           </div>
           
           <div className="space-y-3">
-            {[
-              { title: "Watch YouTube Video", type: "AUTO", reward: 5.0, time: "30s" },
-              { title: "Like Facebook Page", type: "MANUAL", reward: 10.0, time: "Screenshot" },
-              { title: "Subscribe to Channel", type: "AUTO", reward: 15.0, time: "60s" }
-            ].map((task, i) => (
+            {(stats?.availableTasks || []).length > 0 ? stats.availableTasks.map((task: any, i: number) => (
               <div key={i} className="flex items-center justify-between p-4 bg-black/40 border border-white/5 rounded-2xl hover:border-indigo-500/30 transition-colors group">
                 <div className="flex items-center gap-4">
                   <div className={`p-3 rounded-xl ${task.type === 'AUTO' ? 'bg-blue-500/10 text-blue-400' : 'bg-orange-500/10 text-orange-400'}`}>
@@ -253,7 +266,9 @@ export default function DashboardOverview() {
                   </button>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="text-center text-gray-400 py-8">No tasks available right now.</div>
+            )}
           </div>
         </div>
 

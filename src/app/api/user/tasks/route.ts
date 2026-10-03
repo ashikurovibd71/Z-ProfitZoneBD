@@ -37,12 +37,7 @@ export async function GET(req: Request) {
     });
 
     const activePackage = userPackages.find(up => new Date(up.expiresAt) > now);
-    
-    if (!activePackage) {
-      return NextResponse.json({ locked: true, message: 'No active package' }, { status: 200 });
-    }
-
-    const dailyLimit = activePackage.package.dailyTasks;
+    const locked = !activePackage;
 
     // 2. Get today's completed tasks
     const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
@@ -59,18 +54,17 @@ export async function GET(req: Request) {
     const totalEarned = allUserTasks.reduce((acc, ut) => acc + Number(ut.earnedAmount), 0);
 
     // 4. Fetch available tasks
-    // If daily limit reached, return empty array for available tasks
-    const remainingTasksToComplete = Math.max(0, dailyLimit - completedToday.length);
+    const dailyLimit = activePackage ? activePackage.package.dailyTasks : 0;
     
-    let availableTasks: Task[] = [];
+    // Always fetch some active tasks to tempt the user, even if locked
+    const allActiveTasks = await taskRepo.find({ where: { isActive: true }, order: { createdAt: 'DESC' } });
     
-    if (remainingTasksToComplete > 0) {
-      const allActiveTasks = await taskRepo.find({ where: { isActive: true }, order: { createdAt: 'DESC' } });
-      availableTasks = allActiveTasks.filter(t => !completedTodayIds.includes(t.id)).slice(0, remainingTasksToComplete);
-    }
+    // If not locked, they can only do the ones they haven't done today
+    // If locked, we just show them what they are missing out on
+    const availableTasks = allActiveTasks.filter(t => !completedTodayIds.includes(t.id)).slice(0, 15);
 
     return NextResponse.json({ 
-      locked: false,
+      locked,
       dailyLimit,
       completedToday: completedToday.length,
       totalCompleted,

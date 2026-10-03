@@ -25,11 +25,11 @@ export default function TasksPage() {
       const res = await fetch("/api/user/tasks");
       const d = await res.json();
       if (res.ok) {
+        setData(d);
         if (d.locked) {
           setHasPackage(false);
         } else {
           setHasPackage(true);
-          setData(d);
         }
       }
     } catch (e) {
@@ -55,25 +55,7 @@ export default function TasksPage() {
     );
   }
 
-  if (!hasPackage) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] animate-in zoom-in-95 duration-500">
-        <div className="w-24 h-24 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mb-6">
-          <Lock size={40} />
-        </div>
-        <h2 className="text-2xl md:text-3xl font-bold mb-4">Tasks Locked</h2>
-        <p className="text-gray-400 max-w-md text-center mb-8">
-          You don't have an active package. To complete tasks and earn money, please purchase a package first.
-        </p>
-        <Link 
-          href="/dashboard/packages"
-          className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-medium transition-colors"
-        >
-          View Packages <ArrowRight size={20} />
-        </Link>
-      </div>
-    );
-  }
+  // Removed the early return for !hasPackage so that tasks are always visible
 
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -110,9 +92,15 @@ export default function TasksPage() {
           <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-1 md:mb-2">Available Tasks</h2>
           <p className="text-sm md:text-base text-gray-400">Complete tasks to earn money. Auto tasks credit instantly.</p>
         </div>
-        <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm">
-          Daily Limit: <span className="font-bold text-white">{data.completedToday} / {data.dailyLimit}</span>
-        </div>
+        {data.locked ? (
+          <div className="bg-red-500/10 border border-red-500/20 px-4 py-2 rounded-xl text-sm text-red-400 font-medium flex items-center gap-2">
+            <Lock size={16} /> Package Required
+          </div>
+        ) : (
+          <div className="bg-white/5 border border-white/10 px-4 py-2 rounded-xl text-sm">
+            Daily Limit: <span className="font-bold text-white">{data.completedToday} / {data.dailyLimit}</span>
+          </div>
+        )}
       </div>
 
       {data.availableTasks.length === 0 ? (
@@ -150,10 +138,25 @@ export default function TasksPage() {
               </div>
               
               <button 
-                onClick={() => task.type === 'auto' ? setActiveAutoTask(task) : setActiveManualTask(task)}
-                className="w-full py-3 bg-white/10 hover:bg-white text-white hover:text-black rounded-xl font-medium transition-all group-hover:bg-indigo-600 group-hover:text-white"
+                onClick={() => {
+                  if (data.locked) {
+                    router.push("/dashboard/packages");
+                  } else if (data.completedToday >= data.dailyLimit) {
+                    alert("You have reached your daily limit. Upgrade your package for more tasks!");
+                  } else {
+                    task.type === 'auto' ? setActiveAutoTask(task) : setActiveManualTask(task);
+                  }
+                }}
+                className={`w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 ${data.locked ? 'bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600 hover:text-white border border-indigo-500/30' : 'bg-white/10 hover:bg-white text-white hover:text-black group-hover:bg-indigo-600 group-hover:text-white'}`}
               >
-                Start Task
+                {data.locked ? (
+                  <>
+                    <Lock size={18} />
+                    শুরু করতে প্যাকেজ কিনুন
+                  </>
+                ) : (
+                  "Start Task"
+                )}
               </button>
             </div>
           ))}
