@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn , type Relation } from 'typeorm';
 import { User } from './User';
 import { Task } from './Task';
 
@@ -9,11 +9,11 @@ export class UserTask {
 
   @ManyToOne(() => User, (user: User) => user.userTasks)
   @JoinColumn({ name: 'userId' })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => Task, (task: Task) => task.userTasks)
   @JoinColumn({ name: 'taskId' })
-  task!: Task;
+  task!: Relation<Task>;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   earnedAmount!: number;

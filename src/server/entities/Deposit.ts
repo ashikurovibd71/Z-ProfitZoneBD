@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne , type Relation } from 'typeorm';
 import { User } from './User';
 
 @Entity('deposits')
@@ -7,7 +7,7 @@ export class Deposit {
   id!: string;
 
   @ManyToOne(() => User, (user: User) => user.deposits)
-  user!: User;
+  user!: Relation<User>;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   amount!: number;

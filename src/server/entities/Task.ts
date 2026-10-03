@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany , type Relation } from 'typeorm';
 import { UserTask } from './UserTask';
 
 @Entity('tasks')
@@ -25,7 +25,7 @@ export class Task {
   isActive!: boolean;
 
   @OneToMany(() => UserTask, (userTask: UserTask) => userTask.task)
-  userTasks!: UserTask[];
+  userTasks!: Relation<UserTask>[];
 
   @CreateDateColumn()
   createdAt!: Date;

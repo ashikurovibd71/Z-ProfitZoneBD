@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn , type Relation } from 'typeorm';
 import { User } from './User';
 import { Package } from './Package';
 
@@ -9,11 +9,11 @@ export class UserPackage {
 
   @ManyToOne(() => User, (user: User) => user.userPackages)
   @JoinColumn({ name: 'userId' })
-  user!: User;
+  user!: Relation<User>;
 
   @ManyToOne(() => Package, (pkg: Package) => pkg.userPackages)
   @JoinColumn({ name: 'packageId' })
-  package!: Package;
+  package!: Relation<Package>;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   purchasePrice!: number;

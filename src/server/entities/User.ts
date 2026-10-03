@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany , type Relation } from 'typeorm';
 import { Deposit } from './Deposit';
 import { UserPackage } from './UserPackage';
 import { UserTask } from './UserTask';
@@ -40,16 +40,16 @@ export class User {
   walletBalance!: number;
 
   @OneToMany(() => Deposit, (deposit: Deposit) => deposit.user)
-  deposits!: Deposit[];
+  deposits!: Relation<Deposit>[];
 
   @OneToMany(() => UserPackage, (userPackage: UserPackage) => userPackage.user)
-  userPackages!: UserPackage[];
+  userPackages!: Relation<UserPackage>[];
 
   @OneToMany(() => UserTask, (userTask: UserTask) => userTask.user)
-  userTasks!: UserTask[];
+  userTasks!: Relation<UserTask>[];
 
   @OneToMany(() => Withdrawal, (withdrawal: Withdrawal) => withdrawal.user)
-  withdrawals!: Withdrawal[];
+  withdrawals!: Relation<Withdrawal>[];
 
   @Column({ type: 'timestamp', nullable: true })
   lastLogin!: Date | null;
