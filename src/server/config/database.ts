@@ -1,4 +1,5 @@
 import { DataSource } from 'typeorm';
+import 'pg'; // Force Webpack to bundle the pg driver for Vercel
 import dotenv from 'dotenv';
 import path from 'path';
 
