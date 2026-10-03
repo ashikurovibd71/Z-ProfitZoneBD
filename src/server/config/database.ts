@@ -1,7 +1,12 @@
 import { DataSource } from 'typeorm';
-import 'pg'; // Force Webpack to bundle the pg driver for Vercel
+import * as pg from 'pg'; // Force Webpack to bundle the pg driver for Vercel
 import dotenv from 'dotenv';
 import path from 'path';
+
+// Defeat Webpack tree-shaking
+if (typeof pg === 'undefined') {
+  console.log('pg is undefined');
+}
 
 // Load environment variables from .env if not already loaded
 dotenv.config({ path: path.join(process.cwd(), '.env') });
