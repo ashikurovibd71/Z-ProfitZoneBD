@@ -181,7 +181,7 @@ export default function AdminUsersPage() {
                 users.map((user) => (
                   <tr key={user.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(user.id)} onChange={() => toggleSelect(user.id)} /></td>
-<td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(user.id)} onChange={() => toggleSelect(user.id)} /></td><td className="p-4">
+<td className="p-4">
                       <p className="font-medium text-white">{user.fullName}</p>
                       <p className="text-xs text-gray-500">{user.phone}</p>
                     </td>

@@ -175,7 +175,7 @@ export default function AdminDepositsPage() {
                 deposits.map((deposit) => (
                   <tr key={deposit.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(deposit.id)} onChange={() => toggleSelect(deposit.id)} /></td>
-<td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(deposit.id)} onChange={() => toggleSelect(deposit.id)} /></td><td className="p-4">
+<td className="p-4">
                       <p className="font-medium text-white">{deposit.user?.fullName}</p>
                       <p className="text-xs text-gray-500">{deposit.user?.phone}</p>
                     </td>

@@ -151,7 +151,7 @@ export default function KYCApprovalsPage() {
               ) : (
                 users.map(user => (
                   <tr key={user.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                    <td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(user.id)} onChange={() => toggleSelect(user.id)} /></td><td className="p-4 font-medium">{user.fullName}</td>
+                    <td className="p-4 font-medium">{user.fullName}</td>
                     <td className="p-4 text-sm text-gray-400">
                       {user.phone}
                       {user.email && <div className="text-xs opacity-70">{user.email}</div>}

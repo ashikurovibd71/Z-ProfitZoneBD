@@ -142,7 +142,7 @@ export default function AdminWithdrawalsPage() {
                 withdrawals.map((item) => (
                   <tr key={item.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-4 w-12"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(item.id)} onChange={() => toggleSelect(item.id)} /></td>
-<td className="p-4"><input type="checkbox" className="rounded border-gray-600 bg-black/50 accent-red-500 w-4 h-4" checked={selectedIds.includes(item.id)} onChange={() => toggleSelect(item.id)} /></td><td className="p-4 text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</td>
+<td className="p-4 text-gray-400">{new Date(item.createdAt).toLocaleDateString()}</td>
                     <td className="p-4">
                       <p className="font-bold text-white">{item.user?.fullName}</p>
                       <p className="text-xs text-gray-500">{item.user?.phone}</p>
