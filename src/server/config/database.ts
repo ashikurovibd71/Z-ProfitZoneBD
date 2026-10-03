@@ -19,9 +19,7 @@ export const AppDataSource = new DataSource({
   synchronize: true, // Auto-create tables (set to false in production)
   logging: false,
   entities: [User, Deposit, Package, UserPackage, Task, UserTask, Withdrawal],
-  migrations: [
-    path.join(__dirname, '../migrations/**/*.{ts,js}')
-  ],
+  migrations: [],
   subscribers: [],
   ssl: true,
   extra: {
@@ -39,6 +37,6 @@ export const connectDB = async () => {
     }
   } catch (error) {
     console.error('Error connecting to PostgreSQL database:', error);
-    process.exit(1);
+    throw error;
   }
 };
