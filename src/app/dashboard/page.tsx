@@ -10,6 +10,7 @@ export default function DashboardOverview() {
   const [hasKycDocs, setHasKycDocs] = useState<boolean>(true);
   const [showKycModal, setShowKycModal] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
+  const [referralCode, setReferralCode] = useState<string | null>(null);
   
   const [stats, setStats] = useState<any>(null);
   
@@ -27,6 +28,7 @@ export default function DashboardOverview() {
           setUserName(data.user.fullName);
           setKycStatus(data.user.kycStatus || 'pending');
           setHasKycDocs(!!data.user.profilePicture && !!data.user.nidFront && !!data.user.nidBack);
+          setReferralCode(data.user.referralCode || null);
         }
 
         if (statsRes.ok) {
@@ -51,6 +53,32 @@ export default function DashboardOverview() {
           {/* We could also make KYC status dynamic here if we stored it in state, for now we leave it or remove it */}
         </div>
       </div>
+
+      {referralCode && (
+        <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 p-4 sm:p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden shadow-lg shadow-yellow-500/5">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/10 blur-[40px] rounded-full pointer-events-none"></div>
+          <div>
+            <h3 className="text-yellow-500 font-bold mb-1 flex items-center gap-2">
+              <span className="text-xl">🎁</span> আপনার রেফারেল লিংক
+            </h3>
+            <p className="text-sm text-gray-300">
+              এই লিংক শেয়ার করে বন্ধুদের ইনভাইট করুন এবং রেফার বোনাস জিতে নিন!
+            </p>
+          </div>
+          <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-4 py-2 rounded-xl w-full sm:w-auto">
+            <span className="text-gray-400 text-sm select-all truncate max-w-[200px] sm:max-w-xs">{typeof window !== 'undefined' ? `${window.location.origin}/register?ref=${referralCode}` : ''}</span>
+            <button 
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/register?ref=${referralCode}`);
+                alert("Referral link copied!");
+              }}
+              className="px-3 py-1 bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold rounded-lg transition-colors shrink-0"
+            >
+              কপি করুন
+            </button>
+          </div>
+        </div>
+      )}
 
       {(!hasKycDocs || kycStatus !== 'approved') && (
         <div className="bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-xl flex items-start sm:items-center justify-between flex-col sm:flex-row gap-4">

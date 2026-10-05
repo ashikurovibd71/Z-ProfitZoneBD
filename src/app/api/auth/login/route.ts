@@ -41,6 +41,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid credentials (password mismatch)' }, { status: 401 });
     }
 
+    if (user.isActive === false) {
+      return NextResponse.json({ error: 'Your account has been deactivated. Contact admin.' }, { status: 403 });
+    }
+
     user.lastLogin = new Date();
     await userRepository.save(user);
 

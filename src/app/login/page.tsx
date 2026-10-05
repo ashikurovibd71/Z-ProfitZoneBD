@@ -101,7 +101,7 @@ export default function LoginPage() {
                 />
               </div>
               <div className="text-right mt-2">
-                <a href="#" className="text-xs text-yellow-500 hover:text-yellow-400">পাসওয়ার্ড ভুলে গেছেন?</a>
+                <Link href="/reset-password" className="text-xs text-yellow-500 hover:text-yellow-400">পাসওয়ার্ড ভুলে গেছেন?</Link>
               </div>
             </div>
 

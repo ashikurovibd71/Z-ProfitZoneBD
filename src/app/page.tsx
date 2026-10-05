@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { CheckCircle, Star, ArrowRight, UserPlus, Wallet, PlayCircle, Users, HeadphonesIcon, Zap, ShieldCheck, BarChart3, FileText } from 'lucide-react';
+import { CheckCircle, Star, ArrowRight, UserPlus, Wallet, PlayCircle, Users, HeadphonesIcon, Zap, ShieldCheck, BarChart3, FileText, Gift } from 'lucide-react';
 
 export default function Home() {
   const [liveActivities, setLiveActivities] = useState([
@@ -202,6 +202,43 @@ export default function Home() {
               <div>
                 <h3 className="text-lg sm:text-xl font-bold mb-1 sm:mb-2 text-yellow-500">📊 Live Analytics</h3>
                 <p className="text-gray-400 leading-relaxed text-xs sm:text-sm">Real-time dashboard for complete transparency and tracking.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Referral Highlight */}
+        <div className="py-12 sm:py-16">
+          <div className="bg-gradient-to-r from-yellow-500/10 to-amber-500/10 border border-yellow-500/20 rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden shadow-[0_0_50px_rgba(234,179,8,0.1)]">
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-yellow-500/20 blur-[50px] rounded-full"></div>
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-500/20 blur-[50px] rounded-full"></div>
+            
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-tr from-yellow-400 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-yellow-500/30 relative z-10">
+              <Gift size={32} className="text-black" />
+            </div>
+            
+            <h2 className="text-2xl sm:text-4xl font-extrabold mb-4 text-white relative z-10">
+              রেফার করুন আর <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-500">আনলিমিটেড ইনকাম</span> করুন!
+            </h2>
+            
+            <p className="text-gray-300 text-sm sm:text-lg max-w-2xl mx-auto mb-8 relative z-10">
+              আপনার বন্ধুদের ইনভাইট করুন। আপনার লিংকের মাধ্যমে কেউ যুক্ত হলে সাথে সাথে পেয়ে যাবেন রেফার বোনাস! আপনার বন্ধুও পাবে ওয়েলকাম বোনাস।
+            </p>
+            
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 relative z-10">
+              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
+                <span className="text-yellow-500 font-bold">1</span>
+                <span className="text-sm text-gray-300">লিংক শেয়ার করুন</span>
+              </div>
+              <ArrowRight className="text-yellow-500 hidden sm:block opacity-50" />
+              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
+                <span className="text-yellow-500 font-bold">2</span>
+                <span className="text-sm text-gray-300">বন্ধু একাউন্ট খুলবে</span>
+              </div>
+              <ArrowRight className="text-yellow-500 hidden sm:block opacity-50" />
+              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
+                <span className="text-yellow-500 font-bold">3</span>
+                <span className="text-sm text-gray-300">বোনাস পেয়ে যান!</span>
               </div>
             </div>
           </div>

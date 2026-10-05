@@ -8,7 +8,9 @@ export default function AdminSettingsPage() {
     fullName: "",
     email: "",
     phone: "",
-    password: ""
+    password: "",
+    referrerBonus: "0",
+    refereeBonus: "0"
   });
   
   const [loading, setLoading] = useState(true);
@@ -19,6 +21,13 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        const resSettings = await fetch("/api/admin/settings");
+        let settingsMap: Record<string, string> = {};
+        if (resSettings.ok) {
+          const dataSettings = await resSettings.json();
+          settingsMap = dataSettings.settings || {};
+        }
+
         const res = await fetch("/api/auth/me");
         if (res.ok) {
           const data = await res.json();
@@ -26,11 +35,13 @@ export default function AdminSettingsPage() {
             fullName: data.user.fullName || "",
             email: data.user.email || "",
             phone: data.user.phone || "",
-            password: ""
+            password: "",
+            referrerBonus: settingsMap['referrerBonus'] || "0",
+            refereeBonus: settingsMap['refereeBonus'] || "0"
           });
         }
       } catch (err) {
-        console.error("Failed to load user info");
+        console.error("Failed to load user info or settings");
       } finally {
         setLoading(false);
       }
@@ -59,6 +70,18 @@ export default function AdminSettingsPage() {
           email: formData.email,
           password: formData.password
         }),
+      });
+
+      await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: 'referrerBonus', value: formData.referrerBonus })
+      });
+
+      await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key: 'refereeBonus', value: formData.refereeBonus })
       });
 
       if (res.ok) {
@@ -154,6 +177,40 @@ export default function AdminSettingsPage() {
                 placeholder="Enter email address"
                 className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-red-500 transition-colors"
               />
+            </div>
+          </div>
+
+          <div className="pt-6 border-t border-white/10 mt-6">
+            <h3 className="text-lg font-bold mb-4 text-yellow-500 flex items-center gap-2"><span className="text-2xl">🎁</span> Referral Settings</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Referrer Bonus (৳) - যিনি রেফার করবেন</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">৳</span>
+                  <input 
+                    type="number" 
+                    name="referrerBonus"
+                    value={formData.referrerBonus}
+                    onChange={handleChange}
+                    placeholder="e.g. 50"
+                    className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-red-500 transition-colors"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-400 mb-2">Referee Bonus (৳) - যিনি জয়েন করবেন</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">৳</span>
+                  <input 
+                    type="number" 
+                    name="refereeBonus"
+                    value={formData.refereeBonus}
+                    onChange={handleChange}
+                    placeholder="e.g. 20"
+                    className="w-full bg-black/40 border border-white/10 rounded-xl py-3 pl-10 pr-4 text-white focus:outline-none focus:border-red-500 transition-colors"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

@@ -18,13 +18,14 @@ import { UserPackage } from '../entities/UserPackage';
 import { Task } from '../entities/Task';
 import { UserTask } from '../entities/UserTask';
 import { Withdrawal } from '../entities/Withdrawal';
+import { SystemSetting } from '../entities/SystemSetting';
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
   synchronize: true, // Auto-create tables (set to false in production)
   logging: false,
-  entities: [User, Deposit, Package, UserPackage, Task, UserTask, Withdrawal],
+  entities: [User, Deposit, Package, UserPackage, Task, UserTask, Withdrawal, SystemSetting],
   migrations: [],
   subscribers: [],
   ssl: true,

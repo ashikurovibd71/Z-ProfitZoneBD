@@ -36,6 +36,9 @@ export class User {
   @Column({ default: 'user' }) // admin, user
   role!: string;
 
+  @Column({ default: true })
+  isActive!: boolean;
+
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
   walletBalance!: number;
 
@@ -59,4 +62,10 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @Column({ type: 'varchar', unique: true, nullable: true })
+  referralCode!: string | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  referredBy!: string | null;
 }

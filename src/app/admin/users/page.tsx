@@ -11,6 +11,7 @@ type User = {
   email: string | null;
   kycStatus: string;
   role: string;
+  isActive: boolean;
   createdAt: string;
   lastLogin: string | null;
   walletBalance: string;
@@ -87,6 +88,23 @@ export default function AdminUsersPage() {
       .reduce((sum, d) => sum + Number(d.amount), 0);
   };
 
+  const handleToggleStatus = async (userId: string, currentStatus: boolean) => {
+    try {
+      const res = await fetch("/api/admin/users/toggle-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, isActive: !currentStatus })
+      });
+      if (res.ok) {
+        setUsers(prev => prev.map(u => u.id === userId ? { ...u, isActive: !currentStatus } : u));
+      } else {
+        alert("Failed to update status");
+      }
+    } catch (err) {
+      alert("Error updating status");
+    }
+  };
+
   // Stats Calculations
   const totalUsers = users.length;
   const activeUsers = users.filter(u => u.lastLogin).length; // users who have logged in at least once
@@ -159,7 +177,8 @@ export default function AdminUsersPage() {
                 <th className="p-4 font-medium">Last Login</th>
                 <th className="p-4 font-medium">Wallet Balance</th>
                 <th className="p-4 font-medium">Total Deposited</th>
-                <th className="p-4 font-medium">Status</th>
+                <th className="p-4 font-medium">KYC</th>
+                <th className="p-4 font-medium">Access</th>
                 <th className="p-4 font-medium text-right">Action</th>
               </tr>
             </thead>
@@ -197,8 +216,18 @@ export default function AdminUsersPage() {
                         user.kycStatus === 'rejected' ? 'bg-red-500/10 text-red-500' :
                         'bg-green-500/10 text-green-500'
                       }`}>
-                        KYC {user.kycStatus}
+                        {user.kycStatus}
                       </span>
+                    </td>
+                    <td className="p-4">
+                      <button 
+                        onClick={() => handleToggleStatus(user.id, user.isActive ?? true)}
+                        className={`px-3 py-1 rounded-full text-xs font-bold transition-colors ${
+                          (user.isActive ?? true) ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30' : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                        }`}
+                      >
+                        {(user.isActive ?? true) ? 'Active' : 'Inactive'}
+                      </button>
                     </td>
                     <td className="p-4 text-right">
                       <Link 
