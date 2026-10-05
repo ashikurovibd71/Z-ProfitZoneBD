@@ -46,9 +46,7 @@ export default function DashboardLayout({
       <aside className="hidden md:flex w-64 border-r border-white/10 bg-black flex-col justify-between">
         <div>
           <div className="p-6 flex items-center gap-2 border-b border-white/10">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-sm shrink-0">
-              PZ
-            </div>
+            <img src="/logo.jpg" alt="Logo" className="w-8 h-8 rounded-full object-cover shrink-0 shadow-lg shadow-yellow-500/20" />
             <span className="text-xl font-bold tracking-tight">ProfitZoneBD</span>
           </div>
 
@@ -75,9 +73,7 @@ export default function DashboardLayout({
       <main className="flex-1 flex flex-col h-full relative w-full">
         <header className="h-16 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-black/50 backdrop-blur-md sticky top-0 z-20">
           <h1 className="text-base md:text-lg font-medium text-gray-200 truncate pr-2 flex items-center gap-2">
-            <span className="md:hidden w-6 h-6 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-bold text-[10px]">
-              PZ
-            </span>
+            <img src="/logo.jpg" alt="Logo" className="md:hidden w-6 h-6 rounded-full object-cover shadow-lg shadow-yellow-500/20" />
             Dashboard
           </h1>
           <div className="flex items-center gap-2 md:gap-3 shrink-0">

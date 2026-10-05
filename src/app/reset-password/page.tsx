@@ -62,9 +62,7 @@ export default function ResetPasswordPage() {
         
         <div className="bg-[#121c22]/80 backdrop-blur-xl border border-white/10 p-6 sm:p-8 rounded-3xl shadow-2xl">
           <div className="text-center mb-8">
-            <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 flex items-center justify-center font-bold text-black mb-4">
-              PZ
-            </div>
+            <img src="/logo.jpg" alt="Logo" className="w-12 h-12 mx-auto rounded-full object-cover shadow-[0_0_20px_rgba(234,179,8,0.3)] mb-4" />
             <h1 className="text-2xl font-bold mb-2">পাসওয়ার্ড রিসেট</h1>
             <p className="text-gray-400 text-sm">নতুন পাসওয়ার্ড সেট করুন</p>
           </div>
