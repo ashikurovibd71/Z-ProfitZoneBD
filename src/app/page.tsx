@@ -13,6 +13,7 @@ export default function Home() {
   ]);
 
   const [liveActivityTicker, setLiveActivityTicker] = useState({ user: "রিয়াজ***", amount: "৳100" });
+  const [referralCode, setReferralCode] = useState<string | null>(null);
 
   useEffect(() => {
     const interval1 = setInterval(() => {
@@ -35,6 +36,23 @@ export default function Home() {
       clearInterval(interval1);
       clearInterval(interval2);
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.user?.referralCode) {
+            setReferralCode(data.user.referralCode);
+          }
+        }
+      } catch (err) {
+        // user not logged in or error
+      }
+    };
+    fetchUser();
   }, []);
 
   return (
@@ -226,20 +244,42 @@ export default function Home() {
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 relative z-10">
-              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
-                <span className="text-yellow-500 font-bold">1</span>
-                <span className="text-sm text-gray-300">লিংক শেয়ার করুন</span>
-              </div>
-              <ArrowRight className="text-yellow-500 hidden sm:block opacity-50" />
-              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
-                <span className="text-yellow-500 font-bold">2</span>
-                <span className="text-sm text-gray-300">বন্ধু একাউন্ট খুলবে</span>
-              </div>
-              <ArrowRight className="text-yellow-500 hidden sm:block opacity-50" />
-              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
-                <span className="text-yellow-500 font-bold">3</span>
-                <span className="text-sm text-gray-300">বোনাস পেয়ে যান!</span>
-              </div>
+              {referralCode ? (
+                <div className="flex flex-col items-center gap-3">
+                  <span className="text-yellow-500 font-bold mb-2">আপনার রেফারেল লিংক:</span>
+                  <div className="flex items-center gap-2 bg-black/60 border border-white/20 p-2 pl-4 rounded-xl max-w-full overflow-hidden">
+                    <span className="text-gray-300 text-sm select-all truncate max-w-[200px] sm:max-w-md">
+                      {typeof window !== 'undefined' ? `${window.location.origin}/register?ref=${referralCode}` : ''}
+                    </span>
+                    <button 
+                      onClick={() => {
+                        navigator.clipboard.writeText(`${window.location.origin}/register?ref=${referralCode}`);
+                        alert("Referral link copied!");
+                      }}
+                      className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black text-sm font-bold rounded-lg transition-colors shrink-0"
+                    >
+                      কপি করুন
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
+                    <span className="text-yellow-500 font-bold">1</span>
+                    <span className="text-sm text-gray-300">লিংক শেয়ার করুন</span>
+                  </div>
+                  <ArrowRight className="text-yellow-500 hidden sm:block opacity-50" />
+                  <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
+                    <span className="text-yellow-500 font-bold">2</span>
+                    <span className="text-sm text-gray-300">বন্ধু একাউন্ট খুলবে</span>
+                  </div>
+                  <ArrowRight className="text-yellow-500 hidden sm:block opacity-50" />
+                  <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-6 py-3 rounded-full">
+                    <span className="text-yellow-500 font-bold">3</span>
+                    <span className="text-sm text-gray-300">বোনাস পেয়ে যান!</span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
