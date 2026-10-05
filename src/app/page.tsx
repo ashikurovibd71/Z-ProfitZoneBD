@@ -14,6 +14,7 @@ export default function Home() {
 
   const [liveActivityTicker, setLiveActivityTicker] = useState({ user: "রিয়াজ***", amount: "৳100" });
   const [referralCode, setReferralCode] = useState<string | null>(null);
+  const [referralBonusInfo, setReferralBonusInfo] = useState({ referrer: '0', referred: '0' });
 
   useEffect(() => {
     const interval1 = setInterval(() => {
@@ -52,7 +53,21 @@ export default function Home() {
         // user not logged in or error
       }
     };
+
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("/api/public/settings");
+        if (res.ok) {
+          const data = await res.json();
+          setReferralBonusInfo({ referrer: data.referrerBonus, referred: data.referredBonus });
+        }
+      } catch (err) {
+        console.error("Failed to load settings", err);
+      }
+    };
+
     fetchUser();
+    fetchSettings();
   }, []);
 
   return (
@@ -238,7 +253,7 @@ export default function Home() {
             </h2>
             
             <p className="text-gray-300 text-sm sm:text-lg max-w-2xl mx-auto mb-8 relative z-10">
-              আপনার বন্ধুদের ইনভাইট করুন। আপনার লিংকের মাধ্যমে কেউ যুক্ত হলে সাথে সাথে পেয়ে যাবেন রেফার বোনাস! আপনার বন্ধুও পাবে ওয়েলকাম বোনাস।
+              আপনার বন্ধুদের ইনভাইট করুন। আপনার লিংকের মাধ্যমে কেউ যুক্ত হলে সাথে সাথে আপনি পেয়ে যাবেন <span className="text-yellow-500 font-bold">৳{referralBonusInfo.referrer}</span> এবং আপনার বন্ধু পাবে <span className="text-yellow-500 font-bold">৳{referralBonusInfo.referred}</span> ওয়েলকাম বোনাস!
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 relative z-10">
