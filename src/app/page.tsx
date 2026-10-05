@@ -62,9 +62,7 @@ export default function Home() {
       <nav className="backdrop-blur-md bg-black/80 sticky top-0 z-50 border-b border-white/10 px-4 sm:px-8 py-4 sm:py-6">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 flex items-center justify-center font-bold text-black shrink-0">
-              PZ
-            </div>
+            <img src="/logo.jpg" alt="ProfitZoneBD Logo" className="w-8 h-8 rounded-full object-cover shrink-0 shadow-lg shadow-yellow-500/20" />
             <span className="text-lg sm:text-xl font-bold tracking-tight text-yellow-500 hidden sm:block">ProfitZoneBD</span>
           </div>
           <div className="flex gap-4 sm:gap-6 items-center">
@@ -404,9 +402,7 @@ export default function Home() {
             {/* Branding Column */}
             <div className="md:col-span-1">
               <div className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-400 to-amber-600 flex items-center justify-center font-bold text-black shrink-0">
-                  PZ
-                </div>
+                <img src="/logo.jpg" alt="ProfitZoneBD Logo" className="w-8 h-8 rounded-full object-cover shrink-0 shadow-lg shadow-yellow-500/20" />
                 <span className="text-xl font-bold tracking-tight text-yellow-500">ProfitZoneBD</span>
               </div>
               <p className="text-gray-400 text-sm leading-relaxed">
