@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { AlertTriangle, Upload, Image as ImageIcon, IdCard, Loader2, CheckCircle, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 export default function KycPage() {
   const router = useRouter();
@@ -41,13 +42,13 @@ export default function KycPage() {
       if (res.ok) {
         setHasKycDocs(true);
         setKycStatus("pending");
-        alert("KYC documents uploaded successfully!");
+        Swal.fire("KYC documents uploaded successfully!");
       } else {
         const data = await res.json();
-        alert(data.error || "Failed to upload KYC documents");
+        Swal.fire(data.error || "Failed to upload KYC documents");
       }
     } catch (error) {
-      alert("An error occurred while uploading.");
+      Swal.fire("An error occurred while uploading.");
     } finally {
       setIsUploading(false);
     }

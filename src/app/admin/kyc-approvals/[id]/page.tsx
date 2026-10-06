@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { ArrowLeft, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 type User = {
   id: string;
@@ -33,7 +34,7 @@ export default function KYCDetailsPage({ params }: { params: Promise<{ id: strin
         if (res.ok) {
           setUser(data.user);
         } else {
-          alert("User not found");
+          Swal.fire("User not found");
           router.push("/admin/kyc-approvals");
         }
       } catch (error) {
@@ -58,10 +59,10 @@ export default function KYCDetailsPage({ params }: { params: Promise<{ id: strin
       if (res.ok) {
         setUser((prev) => prev ? { ...prev, kycStatus: status } : null);
       } else {
-        alert("Failed to update status");
+        Swal.fire("Failed to update status");
       }
     } catch (error) {
-      alert("Error updating status");
+      Swal.fire("Error updating status");
     } finally {
       setActionLoading(false);
     }

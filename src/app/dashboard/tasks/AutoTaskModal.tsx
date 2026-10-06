@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Loader2, ExternalLink, CheckCircle } from "lucide-react";
+import Swal from 'sweetalert2';
 
 export default function AutoTaskModal({ task, onClose, onComplete }: { task: any, onClose: () => void, onComplete: () => void }) {
   const [status, setStatus] = useState<"IDLE" | "RUNNING" | "COMPLETED">("IDLE");
@@ -61,14 +62,14 @@ export default function AutoTaskModal({ task, onClose, onComplete }: { task: any
       });
       const data = await res.json();
       if (res.ok) {
-        alert(`Successfully claimed ৳${task.rewardAmount}`);
+        Swal.fire(`Successfully claimed ৳${task.rewardAmount}`);
         onComplete();
       } else {
-        alert(data.error || 'Failed to claim reward');
+        Swal.fire(data.error || 'Failed to claim reward');
         onClose();
       }
     } catch (e) {
-      alert('An error occurred');
+      Swal.fire('An error occurred');
       onClose();
     } finally {
       setClaiming(false);

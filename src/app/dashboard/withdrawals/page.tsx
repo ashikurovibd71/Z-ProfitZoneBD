@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowUpFromLine, History, Loader2, Download, AlertCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 export default function WithdrawalsPage() {
   const router = useRouter();
@@ -49,11 +50,11 @@ export default function WithdrawalsPage() {
     const availableToWithdraw = Math.max(0, balance - pendingAmount);
     
     if (Number(formData.amount) > availableToWithdraw) {
-      alert(`You cannot request more than your available balance (৳${availableToWithdraw.toFixed(2)})`);
+      Swal.fire(`You cannot request more than your available balance (৳${availableToWithdraw.toFixed(2)})`);
       return;
     }
     if (Number(formData.amount) < 50) {
-      alert("Minimum withdrawal amount is ৳50.00");
+      Swal.fire("Minimum withdrawal amount is ৳50.00");
       return;
     }
 
@@ -67,14 +68,14 @@ export default function WithdrawalsPage() {
       const data = await res.json();
       
       if (res.ok) {
-        alert("Withdrawal request submitted successfully! Wait for admin approval.");
+        Swal.fire("Withdrawal request submitted successfully! Wait for admin approval.");
         setFormData({ method: 'bkash', accountNumber: '', amount: '' });
         fetchData();
       } else {
-        alert(data.error || "Failed to submit request");
+        Swal.fire(data.error || "Failed to submit request");
       }
     } catch (e) {
-      alert("An error occurred");
+      Swal.fire("An error occurred");
     } finally {
       setSubmitting(false);
     }

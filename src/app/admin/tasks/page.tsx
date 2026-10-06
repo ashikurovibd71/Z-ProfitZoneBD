@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ListTodo, Plus, Loader2, Trash2, Link as LinkIcon } from "lucide-react";
+import Swal from 'sweetalert2';
 
 type Task = {
   id: string;
@@ -60,10 +61,10 @@ export default function AdminTasksPage() {
         setSelectedIds([]);
       } else {
         const data = await res.json();
-        alert("Failed to delete: " + data.error);
+        Swal.fire("Failed to delete: " + data.error);
       }
     } catch (err) {
-      alert("Error deleting items");
+      Swal.fire("Error deleting items");
     } finally {
       setIsDeleting(false);
     }
@@ -100,10 +101,10 @@ export default function AdminTasksPage() {
         fetchTasks();
       } else {
         const data = await res.json();
-        alert(data.error || 'Failed to create task');
+        Swal.fire(data.error || 'Failed to create task');
       }
     } catch (error) {
-      alert('An error occurred');
+      Swal.fire('An error occurred');
     } finally {
       setSubmitting(false);
     }

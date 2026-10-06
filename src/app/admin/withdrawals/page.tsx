@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowUpFromLine, Loader2 , Trash2} from "lucide-react";
 import Link from "next/link";
+import Swal from 'sweetalert2';
 
 export default function AdminWithdrawalsPage() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
@@ -42,10 +43,10 @@ export default function AdminWithdrawalsPage() {
         setSelectedIds([]);
       } else {
         const data = await res.json();
-        alert("Failed to delete: " + data.error);
+        Swal.fire("Failed to delete: " + data.error);
       }
     } catch (err) {
-      alert("Error deleting items");
+      Swal.fire("Error deleting items");
     } finally {
       setIsDeleting(false);
     }

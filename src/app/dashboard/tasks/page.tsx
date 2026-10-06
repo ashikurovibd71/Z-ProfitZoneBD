@@ -6,6 +6,7 @@ import AutoTaskModal from "./AutoTaskModal";
 import ManualTaskModal from "./ManualTaskModal";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 export default function TasksPage() {
   const router = useRouter();
@@ -142,7 +143,7 @@ export default function TasksPage() {
                   if (data.locked) {
                     router.push("/dashboard/packages");
                   } else if (data.completedToday >= data.dailyLimit) {
-                    alert("You have reached your daily limit. Upgrade your package for more tasks!");
+                    Swal.fire("You have reached your daily limit. Upgrade your package for more tasks!");
                   } else {
                     task.type === 'auto' ? setActiveAutoTask(task) : setActiveManualTask(task);
                   }

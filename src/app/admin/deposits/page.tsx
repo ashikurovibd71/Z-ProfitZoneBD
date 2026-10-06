@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowDownToLine, Search, Loader2, CheckCircle, XCircle, Clock , Trash2} from "lucide-react";
+import Swal from 'sweetalert2';
 
 type Deposit = {
   id: string;
@@ -56,10 +57,10 @@ export default function AdminDepositsPage() {
         setSelectedIds([]);
       } else {
         const data = await res.json();
-        alert("Failed to delete: " + data.error);
+        Swal.fire("Failed to delete: " + data.error);
       }
     } catch (err) {
-      alert("Error deleting items");
+      Swal.fire("Error deleting items");
     } finally {
       setIsDeleting(false);
     }

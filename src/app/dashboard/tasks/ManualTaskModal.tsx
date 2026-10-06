@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Upload, ExternalLink } from "lucide-react";
+import Swal from 'sweetalert2';
 
 export default function ManualTaskModal({ task, onClose, onComplete }: { task: any, onClose: () => void, onComplete: () => void }) {
   const [proof, setProof] = useState<File | null>(null);
@@ -22,14 +23,14 @@ export default function ManualTaskModal({ task, onClose, onComplete }: { task: a
       });
       const data = await res.json();
       if (res.ok) {
-        alert(`Successfully claimed ৳${task.rewardAmount}`);
+        Swal.fire(`Successfully claimed ৳${task.rewardAmount}`);
         onComplete();
       } else {
-        alert(data.error || 'Failed to claim reward');
+        Swal.fire(data.error || 'Failed to claim reward');
         onClose();
       }
     } catch (e) {
-      alert('An error occurred');
+      Swal.fire('An error occurred');
       onClose();
     } finally {
       setSubmitting(false);

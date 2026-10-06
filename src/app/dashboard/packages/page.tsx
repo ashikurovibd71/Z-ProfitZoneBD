@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Package as PackageIcon, ShieldCheck, Loader2, ArrowRight, History, Download } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 type Package = {
   id: string;
@@ -70,14 +71,14 @@ export default function PackagesPage() {
       const data = await res.json();
       
       if (res.ok) {
-        alert(data.message);
+        Swal.fire(data.message);
         // Refresh page to update layout wallet balance too
         window.location.reload();
       } else {
-        alert(data.error || 'Purchase failed');
+        Swal.fire(data.error || 'Purchase failed');
       }
     } catch (error) {
-      alert('An error occurred');
+      Swal.fire('An error occurred');
     } finally {
       setBuying(null);
     }

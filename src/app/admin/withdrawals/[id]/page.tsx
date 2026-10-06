@@ -5,6 +5,7 @@ import { ArrowLeft, Loader2, Check, X, Download, User as UserIcon, Banknote, Cal
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { use } from "react";
+import Swal from 'sweetalert2';
 
 export default function WithdrawalDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -45,10 +46,10 @@ export default function WithdrawalDetailsPage({ params }: { params: Promise<{ id
         fetchWithdrawal();
       } else {
         const err = await res.json();
-        alert(err.error || "Failed to process withdrawal");
+        Swal.fire(err.error || "Failed to process withdrawal");
       }
     } catch (e) {
-      alert("An error occurred");
+      Swal.fire("An error occurred");
     }
   };
 

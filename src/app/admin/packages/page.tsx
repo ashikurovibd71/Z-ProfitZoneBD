@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Package as PackageIcon, Plus, Loader2, Trash2 } from "lucide-react";
+import Swal from 'sweetalert2';
 
 type Package = {
   id: string;
@@ -60,10 +61,10 @@ export default function AdminPackagesPage() {
         setSelectedIds([]);
       } else {
         const data = await res.json();
-        alert("Failed to delete: " + data.error);
+        Swal.fire("Failed to delete: " + data.error);
       }
     } catch (err) {
-      alert("Error deleting items");
+      Swal.fire("Error deleting items");
     } finally {
       setIsDeleting(false);
     }
@@ -100,11 +101,11 @@ export default function AdminPackagesPage() {
         fetchPackages();
       } else {
         const data = await res.json();
-        alert(data.error || 'Failed to create package');
+        Swal.fire(data.error || 'Failed to create package');
       }
     } catch (error) {
       console.error(error);
-      alert('An error occurred');
+      Swal.fire('An error occurred');
     } finally {
       setSubmitting(false);
     }

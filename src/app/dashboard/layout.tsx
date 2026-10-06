@@ -91,11 +91,12 @@ export default function DashboardLayout({
       </main>
 
       {/* Mobile Bottom Navigation (hidden on desktop) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-lg border-t border-white/10 z-50 flex items-center justify-around p-2 pb-safe">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-lg border-t border-white/10 z-50 flex items-center justify-around p-2 pb-safe overflow-x-auto">
         <MobileNavItem href="/dashboard" icon={<Home size={20} />} label="Home" />
         <MobileNavItem href="/dashboard/packages" icon={<Package size={20} />} label="Packages" />
         <MobileNavItem href="/dashboard/tasks" icon={<ListTodo size={20} />} label="Tasks" />
         <MobileNavItem href="/dashboard/wallet" icon={<Wallet size={20} />} label="Wallet" />
+        <MobileNavItem href="/dashboard/withdrawals" icon={<ArrowUpFromLine size={20} />} label="Withdraw" />
         <MobileNavItem href="/dashboard/profile" icon={<UserIcon size={20} />} label="Profile" />
       </nav>
     </div>

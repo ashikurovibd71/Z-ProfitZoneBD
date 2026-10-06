@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import { ArrowLeft, CheckCircle, XCircle, Printer, FileText } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 export default function DepositDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -45,13 +46,13 @@ export default function DepositDetailsPage({ params }: { params: Promise<{ id: s
       
       const data = await res.json();
       if (res.ok) {
-        alert(`Deposit successfully ${status}!`);
+        Swal.fire(`Deposit successfully ${status}!`);
         fetchDeposit(); // refresh
       } else {
-        alert(data.error || "Something went wrong");
+        Swal.fire(data.error || "Something went wrong");
       }
     } catch (err) {
-      alert("Error processing request");
+      Swal.fire("Error processing request");
     } finally {
       setActionLoading(false);
     }

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { CheckCircle, Star, ArrowRight, UserPlus, Wallet, PlayCircle, Users, HeadphonesIcon, Zap, ShieldCheck, BarChart3, FileText, Gift } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function Home() {
   const [liveActivities, setLiveActivities] = useState([
@@ -267,7 +268,7 @@ export default function Home() {
                     <button 
                       onClick={() => {
                         navigator.clipboard.writeText(`${window.location.origin}/register?ref=${referralCode}`);
-                        alert("Referral link copied!");
+                        Swal.fire("Referral link copied!");
                       }}
                       className="px-4 py-2 bg-yellow-500 hover:bg-yellow-400 text-black text-sm font-bold rounded-lg transition-colors shrink-0"
                     >

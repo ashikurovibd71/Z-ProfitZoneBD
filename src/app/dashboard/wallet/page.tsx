@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { ArrowDownLeft, ArrowUpRight, Wallet as WalletIcon, History, AlertCircle, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2';
 
 type DepositRecord = {
   id: string;
@@ -77,7 +78,7 @@ export default function WalletPage() {
       
       const data = await res.json();
       if (res.ok) {
-        alert("Deposit request submitted successfully! Pending admin approval.");
+        Swal.fire("Deposit request submitted successfully! Pending admin approval.");
         setAmount("");
         setLastDigitNumber("");
         setTransactionId("");

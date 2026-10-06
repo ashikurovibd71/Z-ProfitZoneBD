@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ArrowUpRight, CheckCircle2, Clock, Wallet, AlertTriangle, Upload, X, Image as ImageIcon, IdCard } from "lucide-react";
+import Swal from 'sweetalert2';
 
 export default function DashboardOverview() {
   const [balance, setBalance] = useState<number>(0);
@@ -70,7 +71,7 @@ export default function DashboardOverview() {
             <button 
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/register?ref=${referralCode}`);
-                alert("Referral link copied!");
+                Swal.fire("Referral link copied!");
               }}
               className="px-3 py-1 bg-yellow-500 hover:bg-yellow-400 text-black text-xs font-bold rounded-lg transition-colors shrink-0"
             >
@@ -130,13 +131,13 @@ export default function DashboardOverview() {
                     setHasKycDocs(true);
                     setKycStatus("pending");
                     setShowKycModal(false);
-                    alert("KYC documents uploaded successfully!");
+                    Swal.fire("KYC documents uploaded successfully!");
                   } else {
                     const data = await res.json();
-                    alert(data.error || "Failed to upload KYC documents");
+                    Swal.fire(data.error || "Failed to upload KYC documents");
                   }
                 } catch (error) {
-                  alert("An error occurred while uploading.");
+                  Swal.fire("An error occurred while uploading.");
                 } finally {
                   setIsUploading(false);
                 }

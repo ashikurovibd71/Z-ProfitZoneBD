@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Users, Search, Loader2, ArrowRight, Wallet, Activity, CheckCircle , Trash2} from "lucide-react";
+import Swal from 'sweetalert2';
 
 type User = {
   id: string;
@@ -56,10 +57,10 @@ export default function AdminUsersPage() {
         setSelectedIds([]);
       } else {
         const data = await res.json();
-        alert("Failed to delete: " + data.error);
+        Swal.fire("Failed to delete: " + data.error);
       }
     } catch (err) {
-      alert("Error deleting items");
+      Swal.fire("Error deleting items");
     } finally {
       setIsDeleting(false);
     }
@@ -98,10 +99,10 @@ export default function AdminUsersPage() {
       if (res.ok) {
         setUsers(prev => prev.map(u => u.id === userId ? { ...u, isActive: !currentStatus } : u));
       } else {
-        alert("Failed to update status");
+        Swal.fire("Failed to update status");
       }
     } catch (err) {
-      alert("Error updating status");
+      Swal.fire("Error updating status");
     }
   };
 
