@@ -34,7 +34,16 @@ export default function DepositDetailsPage({ params }: { params: Promise<{ id: s
   };
 
   const handleAction = async (status: 'approved' | 'rejected') => {
-    if (!confirm(`Are you sure you want to ${status} this deposit?`)) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Are you sure you want to ${status} this deposit?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    });
+    if (!result.isConfirmed) return;
     
     setActionLoading(true);
     try {

@@ -59,7 +59,16 @@ export default function PackagesPage() {
   };
 
   const buyPackage = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to buy the "${name}" package? Price will be deducted from your wallet.`)) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Are you sure you want to buy the "${name}" package? Price will be deducted from your wallet.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    });
+    if (!result.isConfirmed) return;
     
     setBuying(id);
     try {

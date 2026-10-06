@@ -39,7 +39,16 @@ export default function KYCApprovalsPage() {
   };
 
   const handleDelete = async (ids: string[]) => {
-    if (!confirm(`Are you sure you want to delete ${ids.length} item(s)? This action cannot be undone.`)) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Are you sure you want to delete ${ids.length} item(s)? This action cannot be undone.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    });
+    if (!result.isConfirmed) return;
     setIsDeleting(true);
     try {
       const res = await fetch("/api/admin/delete", {

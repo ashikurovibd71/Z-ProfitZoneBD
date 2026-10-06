@@ -34,7 +34,16 @@ export default function WithdrawalDetailsPage({ params }: { params: Promise<{ id
   };
 
   const handleProcess = async (status: 'approved' | 'rejected') => {
-    if (!confirm(`Are you sure you want to mark this withdrawal as ${status}?`)) return;
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Are you sure you want to mark this withdrawal as ${status}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes'
+    });
+    if (!result.isConfirmed) return;
 
     try {
       const res = await fetch(`/api/admin/withdrawals/${id}`, {
