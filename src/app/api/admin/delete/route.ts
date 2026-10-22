@@ -29,9 +29,15 @@ export async function DELETE(req: Request) {
       default: return NextResponse.json({ error: 'Invalid entity' }, { status: 400 });
     }
     
-    // For users, it's safer to delete related records first or let cascading handle it.
-    // Assuming cascading is set up or we can just run delete. TypeORM's delete() will fail if there are FK constraints without ON DELETE CASCADE.
-    // If it fails, we will catch it.
+    if (entity === 'Task') {
+      const userTaskRepo = AppDataSource.getRepository(UserTask);
+      await userTaskRepo
+        .createQueryBuilder()
+        .delete()
+        .where('"taskId" IN (:...ids)', { ids })
+        .execute();
+    }
+
     await repo.delete(ids);
     
     return NextResponse.json({ success: true, message: `Deleted ${ids.length} records from ${entity}` });
