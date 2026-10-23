@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { AppDataSource, connectDB } from '../src/server/config/database';
 import { User } from '../src/server/entities/User';
 import bcrypt from 'bcryptjs';
